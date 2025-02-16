@@ -1,10 +1,14 @@
-import { StatusCode } from "@/shared/enums/api-enum";
 import { ResponseInterface } from "@/shared/interface/api-interface";
+
+interface HeaderInterface {
+  token: string;
+  contentType: string;
+}
 
 export const apiResponse = (
   url: string,
   reqType: string,
-  headers: string,
+  headers: HeaderInterface,
   body?: any
 ) => {
   if (!body) {
@@ -12,24 +16,29 @@ export const apiResponse = (
       url,
       method: reqType,
       headers: {
-        "x-auth-token": headers,
+        Authorization: `Bearer ${headers.token}`,
       },
     };
   }
+
+  const formData = new FormData();
+  formData.append("file", body);
+
   return {
     url,
     method: reqType,
     headers: {
-      "x-auth-token": headers,
+      Authorization: `Bearer ${headers.token}`,
+      "Content-Type": headers.contentType || "",
     },
-    body,
+    body: formData,
   };
 };
 
 export const responseWrapper = async (response: any, meta: any) => {
   const statusCode = meta?.response?.status;
 
-  if (statusCode !== StatusCode.UNAUTHORIZED) {
+  if (statusCode !== 401) {
   }
 
   const result: ResponseInterface = {

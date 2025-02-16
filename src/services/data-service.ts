@@ -1,7 +1,9 @@
 import { apiResponse, responseWrapper } from "@/services/apiServices";
 import { baseUrl } from "@/shared/enums/api-enum";
-import { HttpRequest } from "@/shared/interface/api-interface";
-import { ResponseInterface } from "@/shared/interface/message-interface";
+import {
+  HttpRequest,
+  ResponseInterface,
+} from "@/shared/interface/api-interface";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const DataServices = createApi({
@@ -15,7 +17,10 @@ export const DataServices = createApi({
         return apiResponse(
           httpResponse.httpResponse.url,
           httpResponse.httpResponse.reqType,
-          httpResponse.httpResponse.headers || "",
+          {
+            token: httpResponse.httpResponse.headers?.token || "",
+            contentType: httpResponse.httpResponse.headers?.contentType || "",
+          },
           httpResponse?.payload
         );
       },
@@ -26,7 +31,10 @@ export const DataServices = createApi({
         return apiResponse(
           httpResponse.httpResponse.url,
           httpResponse.httpResponse.reqType,
-          httpResponse.httpResponse.headers || ""
+          {
+            token: httpResponse.httpResponse.headers?.token || "",
+            contentType: httpResponse.httpResponse.headers?.contentType || "",
+          }
         );
       },
       transformResponse: (response, meta) => responseWrapper(response, meta),

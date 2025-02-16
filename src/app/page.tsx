@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <Card sx={{ maxWidth: { xs: '100%', sm: '80%', md: '60%' }, margin: '2rem auto', padding: '1rem' }}>
+      <Card sx={{ width: {sx:"100%",sm:"100%",md:"40%",lg:"40%",xl:"40%"}, margin: '2rem auto', padding: '1rem' }}>
         
         {isSignIn ? <SignIn /> : <SignUp />}
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mt: 2  }}> 

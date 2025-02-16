@@ -1,5 +1,3 @@
-import { localConstants } from "@/shared/enums/local-storage-enum";
-
 export const localStorageHelper = {
   setItem: (key: string, value: any) => {
     if (typeof localStorage !== "undefined") {
@@ -14,13 +12,13 @@ export const localStorageHelper = {
   },
   getUserId: () => {
     if (typeof localStorage !== "undefined") {
-      const item = localStorage.getItem(localConstants.userID);
+      const item = localStorage.getItem("userId");
       return item ? JSON.parse(item) : null;
     }
   },
   getUserToken: () => {
     if (typeof localStorage !== "undefined") {
-      const item = localStorage.getItem(localConstants.token);
+      const item = localStorage.getItem("token");
       return item ? JSON.parse(item) : null;
     }
   },

@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { usePostMethodMutation } from '@/services/data-service';
 import { ApiMethod, LoginApiUrls } from '@/shared/enums/api-enum';
 import { ResponseInterface } from '@/shared/types/http-types';
+import { toast } from 'sonner';
+import { localStorageHelper } from '@/services/local-storage-service';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/shared/hooks/redux-hook';
+import { setAuth } from '@/store/slices/userSlice';
 
 interface SignupFormData {
   fullName: string;
@@ -31,8 +36,6 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignUp = () => {
-  const [postMethod] = usePostMethodMutation();
-  const [error, setError] = useState('');
 
   const {
     register,
@@ -41,9 +44,10 @@ const SignUp = () => {
   } = useForm({
     resolver: yupResolver(SignupSchema)
   });
+  const dispatch  =useAppDispatch()
 
   const [signUpUser, { isLoading, isError }] = usePostMethodMutation();
-
+  const navigate = useRouter()
   const onSubmit = async (values: SignupFormData) => {
     const response = await signUpUser({
       httpResponse: {
@@ -52,38 +56,42 @@ const SignUp = () => {
       },
       payload: values
     });
-    console.log(response);
+    if (response.data?.statusCode===200) {
+      const token = response.data.response?.token;
+      const userId = response.data.response?.id;
+      
+      dispatch(setAuth({
+        userId,
+        token
+      }));
+
+      navigate.push("/dashboard")
+      return
+    }
+    toast.error("something went wrong")
+    return
   };
 
   return (
     <Box
       component="form"
       onSubmit={handleSubmit(onSubmit)}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        maxWidth: 400,
-        margin: '0 auto',
-        padding: 3
-      }}
+      sx={{ mt: 1 }}
     >
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
         Sign Up
       </Typography>
 
-      {error && (
-        <Typography color="error" align="center">
-          {error}
-        </Typography>
-      )}
 
       <TextField
         fullWidth
+        size="small"
+        disabled={isLoading}
         id="fullName"
         label="Full Name"
         {...register('fullName')}
         error={Boolean(errors.fullName)}
+        sx={{ mb: 2 }}
         helperText={errors.fullName?.message}
       />
 
@@ -91,7 +99,10 @@ const SignUp = () => {
         fullWidth
         id="email"
         label="Email"
+        disabled={isLoading}
+        size="small"
         {...register('email')}
+        sx={{ mb: 2 }}
         error={Boolean(errors.email)}
         helperText={errors.email?.message}
       />
@@ -99,8 +110,11 @@ const SignUp = () => {
       <TextField
         fullWidth
         id="password"
+        disabled={isLoading}
         label="Password"
+        size="small"
         type="password"
+        sx={{ mb:2 }}
         {...register('password')}
         error={Boolean(errors.password)}
         helperText={errors.password?.message}
@@ -110,7 +124,10 @@ const SignUp = () => {
         fullWidth
         id="confirmPassword"
         label="Confirm Password"
+        disabled={isLoading}
+        size="small"
         type="password"
+        sx={{ mb: 2 }}
         {...register('confirmPassword')}
         error={Boolean(errors.confirmPassword)}
         helperText={errors.confirmPassword?.message}
@@ -119,11 +136,12 @@ const SignUp = () => {
       <Button
         type="submit"
         variant="contained"
+        disabled={isLoading}
         color="primary"
         fullWidth
         size="large"
       >
-        Sign Up
+        {isLoading? <CircularProgress size={30} /> :"Sign In" }
       </Button>
     </Box>
   );

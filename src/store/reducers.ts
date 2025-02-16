@@ -1,21 +1,17 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { userSlice } from "./slices/userSlice";
-import { DataServices } from "../services/data-service";
-import { tagSlice } from "./slices/tagSlice";
 import { persistReducer } from "redux-persist";
 import localStorage from "redux-persist/es/storage";
-import { projectSlice } from "./slices/projectslice";
+import { DataServices } from "../services/data-service";
+import { userSlice } from "./slices/userSlice";
 
 const persistConfig = {
   key: "root",
   storage: localStorage,
-  whitelist: ["user", "project"],
+  whitelist: ["user"],
 };
 
 const Reducer = combineReducers({
   user: userSlice.reducer,
-  tagSlice: tagSlice.reducer,
-  project: projectSlice.reducer,
   [DataServices.reducerPath]: DataServices.reducer,
 });
 

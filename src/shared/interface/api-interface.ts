@@ -1,7 +1,10 @@
 export interface ApiRequest {
   url: string;
   reqType: string;
-  headers?: string;
+  headers?: {
+    token: string;
+    contentType?: string;
+  };
 }
 
 export interface HttpRequest {
