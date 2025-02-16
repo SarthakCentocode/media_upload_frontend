@@ -17,10 +17,7 @@ export const DataServices = createApi({
         return apiResponse(
           httpResponse.httpResponse.url,
           httpResponse.httpResponse.reqType,
-          {
-            token: httpResponse.httpResponse.headers?.token || "",
-            contentType: httpResponse.httpResponse.headers?.contentType || "",
-          },
+          httpResponse.httpResponse.headers || "",
           httpResponse?.payload
         );
       },
@@ -31,10 +28,7 @@ export const DataServices = createApi({
         return apiResponse(
           httpResponse.httpResponse.url,
           httpResponse.httpResponse.reqType,
-          {
-            token: httpResponse.httpResponse.headers?.token || "",
-            contentType: httpResponse.httpResponse.headers?.contentType || "",
-          }
+          httpResponse.httpResponse.headers || ""
         );
       },
       transformResponse: (response, meta) => responseWrapper(response, meta),
@@ -42,4 +36,5 @@ export const DataServices = createApi({
   }),
 });
 
-export const { usePostMethodMutation, useGetMethodQuery } = DataServices;
+export const { usePostMethodMutation, useGetMethodQuery, useLazyGetMethodQuery } =
+  DataServices;

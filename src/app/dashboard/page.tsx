@@ -29,9 +29,8 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [items, setItems] = useState<MediaItem[]>([]);
-
+  const [mediaId, setMediaId] = useState("")
   const itemsPerPage = 10;
-  const userId = localStorageHelper.getUserId();
 
   const filteredItems = items.filter(item => {
     const searchTerm = searchQuery.toLowerCase();
@@ -45,16 +44,14 @@ export default function Dashboard() {
   const currentItems = filteredItems.slice(startIndex, endIndex);
 
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalId, setDeleteModalId] = useState<string | null>(null);
   const userData = useAppSelector((state)=> state.user)
 
-  const { data, isError, isLoading } = useGetMethodQuery({
+  const { data, isError, isLoading, refetch } = useGetMethodQuery({
     httpResponse: {
       url: StringFormatService(mediaApiUrl.getAllMedia, [userData.userId]),
       reqType: ApiMethod.GET,
-      headers: {
-        token: userData.token,
-      }
+      headers:  userData.token,
     }
   });
 
@@ -64,30 +61,10 @@ export default function Dashboard() {
     }
   }, [data]);
 
-  const handleUpdateItem = (id: string, updatedItem: { file?: File }) => {
-    // Handle file update logic here
-    setItems(prevItems => 
-      prevItems.map(item => item._id === id ? { ...item } : item)
-    );
-  };
 
-  const handleDeleteItem = (id: string) => {
-    setItems(prevItems => prevItems.filter(item => item._id !== id));
-  };
-
-  const handleUpload = async (file: File) => {
-    try {
-      // TODO: Implement actual file upload logic
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('userId', userId);
-      
-      // TODO: Make API call to upload file
-      setUploadModalOpen(false);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      // TODO: Add error handling and user notification
-    }
+  const handleUpdateMedia = (id: string) => {
+    setMediaId(id);
+    setUpdateModalOpen(true);
   };
 
   if (isLoading) {
@@ -158,7 +135,6 @@ export default function Dashboard() {
           <UploadModal
             isOpen={uploadModalOpen}
             onClose={() => setUploadModalOpen(false)}
-            onUpload={handleUpload}
           />
         </Box>
       </Box>
@@ -233,7 +209,7 @@ export default function Dashboard() {
                         variant="contained" 
                         color="primary"
                         size="small"
-                        onClick={() => setUpdateModalOpen(true)}
+                        onClick={() => handleUpdateMedia(item._id)}
                       >
                         Update
                       </Button>
@@ -241,7 +217,7 @@ export default function Dashboard() {
                         variant="outlined"
                         color="error"
                         size="small"
-                        onClick={() => setDeleteModalOpen(true)}
+                        onClick={() => setDeleteModalId(item._id)}
                       >
                         Delete
                       </Button>
@@ -251,21 +227,18 @@ export default function Dashboard() {
 
                 <UpdateModal
                   isOpen={updateModalOpen}
+                  mediaId={mediaId}
                   onClose={() => setUpdateModalOpen(false)}
-                  item={{title: item.fileName, id:item._id, fileUrl:item.fileUrl, fileType:item.fileType}}
-                  onSave={(updatedItem) => {
-                    handleUpdateItem(item._id, updatedItem);
-                    setUpdateModalOpen(false);
-                  }}
                 />
 
                 <DeleteModal 
-                  isOpen={deleteModalOpen}
-                  onClose={() => setDeleteModalOpen(false)}
+                  isOpen={deleteModalId === item._id}
+                  onClose={() => setDeleteModalId(null)}
                   onDelete={() => {
-                    handleDeleteItem(item._id);
-                    setDeleteModalOpen(false);
+                    setDeleteModalId(null);
+                    refetch();
                   }}
+                  id={item._id}
                 />
               </Grid>
             );

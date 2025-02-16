@@ -1,14 +1,11 @@
 import { ResponseInterface } from "@/shared/interface/api-interface";
 
-interface HeaderInterface {
-  token: string;
-  contentType: string;
-}
+
 
 export const apiResponse = (
   url: string,
   reqType: string,
-  headers: HeaderInterface,
+  headers: string,
   body?: any
 ) => {
   if (!body) {
@@ -16,22 +13,19 @@ export const apiResponse = (
       url,
       method: reqType,
       headers: {
-        Authorization: `Bearer ${headers.token}`,
+        Authorization: `Bearer ${headers}`,
       },
     };
   }
 
-  const formData = new FormData();
-  formData.append("file", body);
 
   return {
     url,
     method: reqType,
     headers: {
-      Authorization: `Bearer ${headers.token}`,
-      "Content-Type": headers.contentType || "",
+      Authorization: `Bearer ${headers}`,
     },
-    body: formData,
+    body,
   };
 };
 
