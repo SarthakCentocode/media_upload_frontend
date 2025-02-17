@@ -15,9 +15,10 @@ interface ResponseData {
 export interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
+  mediaUpload: () => void;
 }
 
-export function UploadModal({ isOpen, onClose }: UploadModalProps) {
+export function UploadModal({ isOpen, onClose,mediaUpload }: UploadModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,9 +50,10 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
 
       if ((response.data as ResponseData)?.statusCode === 201) {
         toast.success("Media uploaded successfully");
+        mediaUpload();
         handleClose();
       } else {
-        throw new Error((response.data as ResponseData)?.message || "Upload failed");
+        toast.error((response.data as ResponseData)?.message || "Upload failed");
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to upload media";

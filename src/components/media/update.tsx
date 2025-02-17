@@ -21,10 +21,12 @@ export function UpdateModal({
   isOpen,
   onClose,
   mediaId,
+  mediaUpdate
 }: {
   isOpen: boolean;
   onClose: () => void;
   mediaId: string;
+  mediaUpdate: ()=>void;
 }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [media, setMedia] = useState<mediaInterface>();
@@ -83,6 +85,7 @@ export function UpdateModal({
         toast.success("Media updated successfully");
         setPreview(null);
         setFile(null);
+        mediaUpdate()
         onClose();
       } else {
         toast.error("Failed to update media");
@@ -110,7 +113,7 @@ export function UpdateModal({
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: 600,
+        width: 400,
         bgcolor: "background.paper",
         boxShadow: 24,
         p: 4,
@@ -133,12 +136,33 @@ export function UpdateModal({
         ) : (
           <>
             <Box sx={{ mt: 2, height: 200, overflow: "hidden" }}>
-              {media?.fileType === "image" ? (
+              {preview ? (
+                file?.type.startsWith("image/") ? (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <video
+                    src={preview}
+                    controls
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                )
+              ) : media?.fileType === "image" ? (
                 <img
-                  src={
-                    preview ||
-                    `${process.env.NEXT_PUBLIC_API_URL}/` + media?.fileUrl
-                  }
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/` + media?.fileUrl}
                   alt={media.title}
                   style={{
                     width: "100%",
@@ -148,7 +172,7 @@ export function UpdateModal({
                 />
               ) : (
                 <video
-                  src={preview || media?.fileUrl}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/` + media?.fileUrl}
                   controls
                   style={{
                     width: "100%",
@@ -172,7 +196,7 @@ export function UpdateModal({
               <input
                 type="file"
                 hidden
-                accept={media?.fileType === "image" ? "image/*" : "video/*"}
+                accept="image/*,video/*"
                 onChange={handleFileSelect}
                 disabled={isUpdating}
               />

@@ -8,6 +8,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        serializableCheck: false,
         ignoredActionPaths: ["meta.arg", "payload", "error"],
         ignoredPaths: ["items.dates"],
       },
