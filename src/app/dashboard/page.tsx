@@ -207,7 +207,7 @@ export default function Dashboard() {
                     }}>
                       <Button 
                         variant="contained" 
-                        color="primary"
+                        color="warning"
                         size="small"
                         onClick={() => handleUpdateMedia(item._id)}
                       >
