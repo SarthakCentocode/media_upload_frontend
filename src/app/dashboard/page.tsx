@@ -259,19 +259,18 @@ export default function Dashboard() {
                     Uploaded: {new Date(item.createdAt).toLocaleDateString()}
                   </Typography>
                   <CardActions>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        p: 1,
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="warning"
-                        size="small"
+                    <Box sx={{
+                      display: "flex", 
+                      width: "100%",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: 1
+                    }}>
+                      {/* Add another color */}
+                      <Button 
+                        variant="contained" 
+                        color="info"
+                        size="medium"
                         onClick={() => handleUpdateMedia(item._id)}
                       >
                         Update
