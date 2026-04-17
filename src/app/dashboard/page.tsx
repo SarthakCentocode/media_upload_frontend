@@ -209,7 +209,7 @@ export default function Dashboard() {
                       <Button 
                         variant="contained" 
                         color="info"
-                        size="small"
+                        size="large"
                         onClick={() => handleUpdateMedia(item._id)}
                       >
                         Update
