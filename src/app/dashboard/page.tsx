@@ -75,7 +75,14 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <CircularProgress size={60} thickness={4} />
       </Box>
     );
@@ -83,7 +90,15 @@ export default function Dashboard() {
 
   if (isError) {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+          p: 4,
+        }}
+      >
         <Typography variant="h5" color="error">
           Error loading media
         </Typography>
@@ -181,74 +196,94 @@ export default function Dashboard() {
           py: 1,
         }}
       >
-        {items.length === 0 ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <Typography variant="h6" color="text.secondary">
-              No media found. Click "Upload Media" to add some!
-            </Typography>
-          </Box>
-        ) : (
-          <Grid container spacing={3}>
-            {currentItems.map((item) => {
-              return (
-                <Grid
-                  key={item._id}
-                  size={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 3 }}
+        <Grid container spacing={3}>
+          {currentItems.map((item) => {
+            return (
+              <Grid
+                key={item._id}
+                size={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 3 }}
+              >
+                <Card
+                  sx={{
+                    p: 3,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.02)",
+                      boxShadow: 3,
+                    },
+                  }}
                 >
-                  <Card
-                    sx={{
-                      p: 3,
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      transition: "all 0.2s ease-in-out",
-                      "&:hover": {
-                        transform: "scale(1.02)",
-                        boxShadow: 3,
-                      },
-                    }}
+                  <Typography
+                    variant="h6"
+                    sx={{ mb: 2, color: "primary.main" }}
                   >
-                    <Typography
-                      variant="h6"
-                      sx={{ mb: 2, color: "primary.main" }}
+                    {item.fileName}
+                  </Typography>
+                  <Box sx={{ mb: 2, height: 200, overflow: "hidden" }}>
+                    {item.fileType === "image" ? (
+                      <img
+                        src={
+                          `${process.env.NEXT_PUBLIC_API_URL}/` + item.fileUrl
+                        }
+                        alt={item.fileName}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <video
+                        src={
+                          `${process.env.NEXT_PUBLIC_API_URL}` + item.fileUrl
+                        }
+                        controls
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+                  </Box>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Uploaded: {new Date(item.createdAt).toLocaleDateString()}
+                  </Typography>
+                  <CardActions>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        p: 1,
+                      }}
                     >
-                      {item.fileName}
-                    </Typography>
-                    <Box sx={{ mb: 2, height: 200, overflow: "hidden" }}>
-                      {item.fileType === "image" ? (
-                        <img
-                          src={
-                            `${process.env.NEXT_PUBLIC_API_URL}/` + item.fileUrl
-                          }
-                          alt={item.fileName}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <video
-                          src={
-                            `${process.env.NEXT_PUBLIC_API_URL}/` + item.fileUrl
-                          }
-                          controls
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      )}
+                      <Button
+                        variant="contained"
+                        color="warning"
+                        size="small"
+                        onClick={() => handleUpdateMedia(item._id)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        onClick={() => setDeleteModalId(item._id)}
+                      >
+                        Delete
+                      </Button>
                     </Box>
                     <Typography
                       variant="caption"
@@ -285,7 +320,7 @@ export default function Dashboard() {
                         </Button>
                       </Box>
                     </CardActions>
-                  </Card>
+                  </CardActions>
 
                   <UpdateModal
                     isOpen={updateModalOpen}
@@ -303,11 +338,11 @@ export default function Dashboard() {
                     }}
                     id={item._id}
                   />
-                </Grid>
-              );
-            })}
-          </Grid>
-        )}
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Box>
 
       {items.length > 0 && (
