@@ -205,9 +205,10 @@ export default function Dashboard() {
                       alignItems: "center",
                       p: 1
                     }}>
+                      {/* Add another color */}
                       <Button 
                         variant="contained" 
-                        color="warning"
+                        color="info"
                         size="small"
                         onClick={() => handleUpdateMedia(item._id)}
                       >
