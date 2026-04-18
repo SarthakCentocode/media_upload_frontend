@@ -4,6 +4,8 @@ import SignUp from "@/components/auth/signup";
 import { Card, Button, Box, Typography } from "@mui/material";
 import { useState } from "react";
 
+
+//This is the page file and I had done some changes 
 export default function Home() {
   const [isSignIn, setIsSignIn] = useState(true);
 
