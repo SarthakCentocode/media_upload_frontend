@@ -4,6 +4,8 @@ import "./globals.css";
 import StoreProvider from "./storeProvider";
 import { Toaster } from "sonner";
 
+
+// This is the global layout and i have done some changes
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
