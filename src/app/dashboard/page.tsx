@@ -33,6 +33,8 @@ interface MediaItem {
   title: string;
 }
 
+
+// HERE  I AM DOING SOME CHANGING WITHOUT MERGING THE BRANCH 
 export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
